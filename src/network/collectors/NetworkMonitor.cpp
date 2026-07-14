@@ -47,28 +47,25 @@ static std::string ipv4ToString(DWORD addr)
     }
     return std::string(buf.data());
 }
-} // namespace
 
-std::vector<Connection> NetworkMonitor::getActiveConnections()
+static void collectTcpConnections(std::vector<Connection>& connections,
+                                  std::chrono::system_clock::time_point now)
 {
-    std::vector<Connection> connections;
-    const auto now = std::chrono::system_clock::now();
-
     ULONG size = 0;
     DWORD ret = GetExtendedTcpTable(nullptr, &size, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0);
     if (ret != ERROR_INSUFFICIENT_BUFFER || size == 0)
     {
-        return connections;
+        return;
     }
 
     std::vector<std::uint8_t> buffer(size);
     ret = GetExtendedTcpTable(buffer.data(), &size, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0);
     if (ret != NO_ERROR)
     {
-        return connections;
+        return;
     }
 
-    const auto* table = reinterpret_cast<PMIB_TCPTABLE_OWNER_PID>(buffer.data());
+    const auto* table = reinterpret_cast<const MIB_TCPTABLE_OWNER_PID*>(buffer.data());
     for (DWORD i = 0; i < table->dwNumEntries; ++i)
     {
         const MIB_TCPROW_OWNER_PID& row = table->table[i];
@@ -83,6 +80,52 @@ std::vector<Connection> NetworkMonitor::getActiveConnections()
             toConnectionState(row.dwState),
             now);
     }
+}
+
+// UDP is connectionless: IP Helper exposes local endpoints only
+// (no remote address/port and no TCP-style connection state).
+static void collectUdpEndpoints(std::vector<Connection>& connections,
+                                std::chrono::system_clock::time_point now)
+{
+    ULONG size = 0;
+    DWORD ret = GetExtendedUdpTable(nullptr, &size, FALSE, AF_INET, UDP_TABLE_OWNER_PID, 0);
+    if (ret != ERROR_INSUFFICIENT_BUFFER || size == 0)
+    {
+        return;
+    }
+
+    std::vector<std::uint8_t> buffer(size);
+    ret = GetExtendedUdpTable(buffer.data(), &size, FALSE, AF_INET, UDP_TABLE_OWNER_PID, 0);
+    if (ret != NO_ERROR)
+    {
+        return;
+    }
+
+    const auto* table = reinterpret_cast<const MIB_UDPTABLE_OWNER_PID*>(buffer.data());
+    for (DWORD i = 0; i < table->dwNumEntries; ++i)
+    {
+        const MIB_UDPROW_OWNER_PID& row = table->table[i];
+
+        connections.emplace_back(
+            row.dwOwningPid,
+            ipv4ToString(row.dwLocalAddr),
+            ntohs(static_cast<u_short>(row.dwLocalPort)),
+            std::string{},
+            static_cast<uint16_t>(0),
+            ProtocolType::UDP,
+            ConnectionState::LISTENING,
+            now);
+    }
+}
+} // namespace
+
+std::vector<Connection> NetworkMonitor::getActiveConnections()
+{
+    std::vector<Connection> connections;
+    const auto now = std::chrono::system_clock::now();
+
+    collectTcpConnections(connections, now);
+    collectUdpEndpoints(connections, now);
 
     return connections;
 }
