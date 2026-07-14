@@ -11,6 +11,7 @@ namespace network
 class NetworkMonitor
 {
 public:
+    // Collects active IPv4 TCP connections and UDP endpoints.
     std::vector<Connection> getActiveConnections();
 };
 
