@@ -44,6 +44,7 @@ network/
 │     ConnectionTransferSnapshot.h
 │     ConnectionBandwidthStats.h
 │     ProcessBandwidthStats.h
+│     DataTransferMetadata.h
 │
 ├── collectors/
 │     NetworkMonitor.h
@@ -356,6 +357,50 @@ Total Transfer:
 
 ---
 
+### DataTransferMetadata
+
+Reusable Data Transfer Analysis record that:
+
+- Stores process ID and process name when available
+- Stores remote IP, remote port, and transport protocol
+- Stores uploaded and downloaded byte totals together
+- Stores upload and download transfer rates
+- Derives total transferred bytes (upload + download)
+- Preserves first-observed and last-updated timestamps
+- Can be built from a `Connection` snapshot or `ConnectionBandwidthStats`
+- Provides formatted output for logging and inspection
+- Contains metadata only (no OS networking logic)
+
+Example output:
+
+```text
+Process:
+python.exe
+
+Protocol:
+TCP
+
+Remote:
+104.18.32.45:443
+
+Uploaded:
+12.5 MB
+
+Downloaded:
+3.2 MB
+
+Upload Rate:
+1.4 MB/s
+
+Download Rate:
+320.0 KB/s
+
+Total Transfer:
+15.7 MB
+```
+
+---
+
 ### EventDispatcher
 
 Publishes connection events so downstream modules can consume them without directly depending on the Network Monitor.
@@ -409,14 +454,9 @@ Windows Networking APIs (IPv4 + IPv6 + TCP ESTATS)
 7. The Domain Resolver performs reverse DNS (with caching) for human-readable hostnames.
 8. The Protocol Port Analyzer extracts transport protocol and port metadata.
 9. `ConnectionMetadata` combines remote IP, domain, protocol, and ports into one reusable record.
-10. Connection events are published through the Event Dispatcher.
-11. Higher-level modules consume these events for correlation, behavioral analysis, and threat detection.
-5. The Remote Endpoint Identifier validates remote IPs and records address family.
-6. The Domain Resolver performs reverse DNS (with caching) for human-readable hostnames.
-7. The Protocol Port Analyzer extracts transport protocol and port metadata.
-8. `ConnectionMetadata` combines remote IP, domain, protocol, and ports into one reusable record.
-9. Connection events are published through the Event Dispatcher.
-10. Higher-level modules consume these events for correlation, behavioral analysis, and threat detection.
+10. `DataTransferMetadata` combines process, protocol, remote endpoint, volumes, and rates into one reusable transfer record.
+11. Connection events are published through the Event Dispatcher.
+12. Higher-level modules consume these events for correlation, behavioral analysis, and threat detection.
 
 ---
 
