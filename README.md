@@ -104,6 +104,7 @@ Measure:
 * Download volume (per-connection inbound tracking via `DownloadTracker`)
 * Transfer rate (short-window rates via `TransferRateTracker`)
 * Session statistics (per-process / per-connection bandwidth totals)
+* Reusable transfer metadata (`DataTransferMetadata`: process + protocol + remote + volumes + rates)
 
 Example:
 
@@ -111,30 +112,26 @@ Example:
 Process:
 python.exe
 
-Upload Rate:
-1.8 MB/s
-
-Download Rate:
-320.0 KB/s
-
-Total Transfer:
-42.6 MB
-```
-
-Volume detail example:
-
-```text
-Process:
-python.exe
+Protocol:
+TCP
 
 Remote:
 104.18.32.45:443
 
 Uploaded:
-2.4 MB
+12.5 MB
 
 Downloaded:
-12 MB
+3.2 MB
+
+Upload Rate:
+1.4 MB/s
+
+Download Rate:
+320.0 KB/s
+
+Total Transfer:
+15.7 MB
 ```
 
 ---
@@ -299,6 +296,7 @@ Alerting & Reporting
 * Download monitoring (`ConnectionDownloadStats`, `DownloadTracker`)
 * Transfer metrics (OS TCP ESTATS via `NetworkMonitor::getConnectionTransferSnapshots`)
 * Transfer rates (`ConnectionBandwidthStats`, `ProcessBandwidthStats`, `TransferRateTracker`)
+* Data transfer metadata model (`DataTransferMetadata`: process + protocol + remote + volumes + rates)
 
 ---
 
