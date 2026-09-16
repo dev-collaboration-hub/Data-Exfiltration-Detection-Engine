@@ -171,7 +171,16 @@ Remote Port:
 
 ## Process Behavior Timeline
 
-Build a chronological view of process activity.
+Build a chronological view of process activity using reusable `ProcessActivityEvent` records.
+
+Supported event types:
+
+* `process_seen`
+* `connection_opened`
+* `upload_activity`
+* `download_activity`
+* `connection_closed`
+* `suspicious_activity`
 
 Example:
 
@@ -302,6 +311,7 @@ Alerting & Reporting
 
 ## M5 — Process Behavior Timeline
 
+* Process activity event model (`ProcessActivityEvent`, `ProcessActivityEventType`)
 * Event collection
 * Activity timeline generation
 * Historical analysis
