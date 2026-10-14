@@ -190,7 +190,7 @@ Collection sources:
 
 Events are grouped by PID, duplicate observations are skipped, and timelines are sorted by timestamp.
 
-Recent events are retained in short-term memory by `TimelineEventHistory` with a maximum size and age-based cleanup. `TimelineQuery` fetches timelines by PID, process name, remote IP/domain, event type, or recent N events.
+Recent events are retained in short-term memory by `TimelineEventHistory` with a maximum size and age-based cleanup, and can be queried by PID or process name.
 
 Example:
 
