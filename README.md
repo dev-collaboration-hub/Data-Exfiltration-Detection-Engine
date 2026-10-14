@@ -190,7 +190,7 @@ Collection sources:
 
 Events are grouped by PID, duplicate observations are skipped, and timelines are sorted by timestamp.
 
-Recent events are retained in short-term memory by `TimelineEventHistory` with a maximum size and age-based cleanup, and can be queried by PID or process name.
+Recent events are retained in short-term memory by `TimelineEventHistory` with a maximum size and age-based cleanup. `TimelineQuery` fetches timelines by PID, process name, remote IP/domain, event type, or recent N events.
 
 Example:
 
@@ -321,6 +321,7 @@ Alerting & Reporting
 * Timeline event collection (`TimelineEventCollector`: process + connection + transfer events, grouped by PID)
 * Activity timeline generation (`ProcessTimelineBuilder`: chronological per-process and global timelines)
 * Short-term event history (`TimelineEventHistory`: bounded in-memory store, lookup by PID / process name)
+* Timeline query helpers (`TimelineQuery`: PID, process name, remote destination, event type, recent N)
 * Historical analysis
 
 ---
