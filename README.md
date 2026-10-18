@@ -321,6 +321,7 @@ Alerting & Reporting
 * Timeline event collection (`TimelineEventCollector`: process + connection + transfer events, grouped by PID)
 * Activity timeline generation (`ProcessTimelineBuilder`: chronological per-process and global timelines)
 * Short-term event history (`TimelineEventHistory`: bounded in-memory store, lookup by PID / process name)
+* Timeline query helpers (`TimelineQuery`: PID, process name, remote destination, event type, recent N)
 * Historical analysis
 
 ---
