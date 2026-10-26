@@ -190,7 +190,9 @@ Collection sources:
 
 Events are grouped by PID, duplicate observations are skipped, and timelines are sorted by timestamp.
 
-Recent events are retained in short-term memory by `TimelineEventHistory` with a maximum size and age-based cleanup, and can be queried by PID or process name.
+Recent events are retained in short-term memory by `TimelineEventHistory` with a maximum size and age-based cleanup. `TimelineQuery` fetches timelines by PID, process name, remote IP/domain, event type, or recent N events.
+
+`TimelineSummaryBuilder` turns raw timeline events into a readable `ProcessActivitySummary` with active duration, remote endpoint count, upload/download totals, most-active destination, and soft behavior hints (no final alerts).
 
 Example:
 
@@ -198,6 +200,16 @@ Example:
 10:01:02 | python.exe | Process Seen
 10:01:10 | python.exe | Connected to 104.18.32.45:443
 10:01:15 | python.exe | Upload Activity: 12.5 MB
+```
+
+Example summary:
+
+```text
+python.exe was active for 12 minutes.
+It connected to 3 remote endpoints.
+Total upload: 25.4 MB.
+Total download: 1.2 MB.
+Most active destination: api.example.com:443.
 ```
 
 ---
@@ -322,7 +334,7 @@ Alerting & Reporting
 * Activity timeline generation (`ProcessTimelineBuilder`: chronological per-process and global timelines)
 * Short-term event history (`TimelineEventHistory`: bounded in-memory store, lookup by PID / process name)
 * Timeline query helpers (`TimelineQuery`: PID, process name, remote destination, event type, recent N)
-* Historical analysis
+* Historical analysis (`TimelineSummaryBuilder` / `ProcessActivitySummary`: duration, connections, upload/download, soft behavior hints — no final alerts)
 
 ---
 
