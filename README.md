@@ -194,6 +194,8 @@ Recent events are retained in short-term memory by `TimelineEventHistory` with a
 
 `TimelineSummaryBuilder` turns raw timeline events into a readable `ProcessActivitySummary` with active duration, remote endpoint count, upload/download totals, most-active destination, and soft behavior hints (no final alerts).
 
+System tests exercise fake process and network events through collection, chronological sorting, and per-process timeline generation. A full walkthrough lives in `docs/SAMPLE_TIMELINE_REPORT.md`.
+
 Example:
 
 ```text
@@ -335,6 +337,7 @@ Alerting & Reporting
 * Short-term event history (`TimelineEventHistory`: bounded in-memory store, lookup by PID / process name)
 * Timeline query helpers (`TimelineQuery`: PID, process name, remote destination, event type, recent N)
 * Historical analysis (`TimelineSummaryBuilder` / `ProcessActivitySummary`: duration, connections, upload/download, soft behavior hints — no final alerts)
+* Timeline system tests + sample report (`tests/process/TimelineSystemTests.cpp`, `docs/SAMPLE_TIMELINE_REPORT.md`)
 
 ---
 
